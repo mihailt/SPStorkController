@@ -22,6 +22,8 @@
 import UIKit
 
 final class SPStorkDismissingAnimationController: NSObject, UIViewControllerAnimatedTransitioning {
+    
+    var customWidth: CGFloat? = nil
 
     func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
         
@@ -32,7 +34,14 @@ final class SPStorkDismissingAnimationController: NSObject, UIViewControllerAnim
         let finalFrameForPresentedView = transitionContext.finalFrame(for: presentedViewController)
         
         let containerView = transitionContext.containerView
-        let offscreenFrame = CGRect(x: 0, y: containerView.bounds.height, width: finalFrameForPresentedView.width, height: finalFrameForPresentedView.height)
+
+        var customWidth = self.customWidth ?? finalFrameForPresentedView.width
+        if customWidth > containerView.bounds.width {
+            customWidth = containerView.bounds.width
+            print("SPStorkController - Custom width change to default value. Your width more maximum value")
+        }
+        let xOffset: CGFloat = (containerView.bounds.width - customWidth) / 2
+        let offscreenFrame = CGRect(x: xOffset, y: containerView.bounds.height, width: customWidth, height: finalFrameForPresentedView.height)
         
         UIView.animate(
             withDuration: transitionDuration(using: transitionContext),
